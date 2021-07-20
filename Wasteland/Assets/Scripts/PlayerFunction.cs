@@ -11,8 +11,10 @@ public class PlayerFunction : MonoBehaviour
     bool isPaused = false;
     bool vendingMachineFound;
     bool vendingUsed;
+    bool isAbleJump;
 
     float vendingCooldown = 3f;
+
 
     int gameCredit;
 
@@ -21,7 +23,10 @@ public class PlayerFunction : MonoBehaviour
 
     [SerializeField]
     int movementSpeed;
+    int doubleJumpValue;
 
+
+    [SerializeField]
     int jumpPower;
 
     float x;
@@ -31,8 +36,20 @@ public class PlayerFunction : MonoBehaviour
     Animator anim;
 
     public Collider2D[] colliders;
+
+    BoxCollider2D onGround;
     public GameObject pauseMenu;
 
+
+    
+
+
+
+    // Floats
+
+    float jumpCounter;
+    float jumpCooldown;
+    
 
     void Start()
     {
@@ -42,6 +59,8 @@ public class PlayerFunction : MonoBehaviour
         anim = GetComponent<Animator>();
 
         player = this.gameObject;
+
+
 
     }
 
@@ -56,17 +75,27 @@ public class PlayerFunction : MonoBehaviour
             vendingMachineFound = false;
         }
 
+        if (Input.GetButtonDown("Jump"))
+        {
+            Jump();
+        }
+        
+
     }
 
 
     void playerWalking()
     {
         x = Input.GetAxis("Horizontal");
-        y = Input.GetAxis("Vertical");
-        rb2D.velocity = new Vector2(x, y) * movementSpeed;
+        y = Input.GetAxis("Horizontal");
+
+
+
 
         if (Input.GetKey(KeyCode.D) || (Input.GetKey(KeyCode.RightArrow)))
         {
+
+            rb2D.velocity =  Vector2.right;
 
             GetComponent<Animator>().SetBool("isWalking", true);
             transform.rotation = Quaternion.Euler(0, 180f, 0);
@@ -81,6 +110,9 @@ public class PlayerFunction : MonoBehaviour
 
         if (Input.GetKey(KeyCode.A) || (Input.GetKey(KeyCode.LeftArrow)))
         {
+
+            rb2D.velocity = Vector2.left;
+
 
             GetComponent<Animator>().SetBool("isWalking", true);
             transform.rotation = Quaternion.Euler(0, 0f, 0);
@@ -168,6 +200,31 @@ public class PlayerFunction : MonoBehaviour
 
     }
 
-    
+
+    private void Jump()
+    {
+        //if (!onGround)
+        //    doubleJumpValue--;
+
+
+
+        rb2D.velocity = new Vector2(rb2D.velocity.x, 0f);
+        rb2D.AddForce(Vector2.up * jumpPower);
+        //   _hangTimeCounter = 0f;
+        //   _jumpBufferCounter = 0f;
+
+        /*
+        //Animation
+        _anim.SetBool("isJumping", true);
+        _anim.SetBool("isFalling", false);
+        */
+
+        Debug.Log("Jumping");
+
+
+
+        }
+
+
 }
 
