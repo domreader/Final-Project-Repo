@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - floor
+  - firstCollider
+  - secondCollider
+  - thirdCollider
+  - Vending
+  - Teleport
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3517259549
+    locked: 0
+  - name: Background1
+    uniqueID: 3855721559
+    locked: 0
+  - name: middle
+    uniqueID: 3730250491
+    locked: 0
+  - name: middle2
+    uniqueID: 1999109077
+    locked: 0
+  - name: Decorate
+    uniqueID: 1530937765
+    locked: 0
+  - name: Road
+    uniqueID: 286259793
+    locked: 0
+  - name: front
+    uniqueID: 1415505923
+    locked: 0
+  - name: front 1
+    uniqueID: 1627704041
+    locked: 0

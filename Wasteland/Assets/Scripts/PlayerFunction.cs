@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerFunction : MonoBehaviour
 {
-
+    SpriteRenderer spriteRenderer;
 
     bool isGrounded;
     bool isWalking;
@@ -13,11 +13,13 @@ public class PlayerFunction : MonoBehaviour
     bool vendingUsed;
     bool isAbleJump;
 
-    float vendingCooldown = 3f;
+    bool jumpEnabled;
 
+    float vendingCooldown = 3f;
+    float movementAdjustment = 1f;
 
     int gameCredit;
-
+    int jumpValue = 0;
 
     GameObject player;
 
@@ -37,13 +39,9 @@ public class PlayerFunction : MonoBehaviour
 
     public Collider2D[] colliders;
 
+    public BoxCollider2D grounded;
     BoxCollider2D onGround;
     public GameObject pauseMenu;
-
-
-    
-
-
 
     // Floats
 
@@ -61,45 +59,60 @@ public class PlayerFunction : MonoBehaviour
         player = this.gameObject;
 
 
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
     }
 
-    void Update()
+     void Update()
     {
         playerWalking();
-        playerTeleport();
-        playerInteractions();
 
-        if (vendingUsed == true)
+        if (isGrounded == true && Input.GetButtonDown("Jump"))
         {
-            vendingMachineFound = false;
+            jumpEnabled = true;
+            Jump();
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (jumpValue == 1)
         {
-            Jump();
+            isGrounded = false;
         }
         
 
     }
 
+    void FixedUpdate()
+    {
+
+
+        playerTeleport();
+        playerInteractions();
+
+       
+
+        if (vendingUsed == true)
+        {
+            vendingMachineFound = false;
+        }
+    }
 
     void playerWalking()
     {
         x = Input.GetAxis("Horizontal");
         y = Input.GetAxis("Horizontal");
 
-
+        Vector3 moveDirection = new Vector3(Input.GetAxisRaw("Horizontal"), 0, 0);
 
 
         if (Input.GetKey(KeyCode.D) || (Input.GetKey(KeyCode.RightArrow)))
         {
+            transform.Translate(moveDirection * movementSpeed * Time.deltaTime);
 
-            rb2D.velocity =  Vector2.right;
+            transform.rotation = Quaternion.Euler(0, 360, 0);
+            spriteRenderer.flipX = true;
+
 
             GetComponent<Animator>().SetBool("isWalking", true);
-            transform.rotation = Quaternion.Euler(0, 180f, 0);
-
 
         }
         else
@@ -111,22 +124,18 @@ public class PlayerFunction : MonoBehaviour
         if (Input.GetKey(KeyCode.A) || (Input.GetKey(KeyCode.LeftArrow)))
         {
 
-            rb2D.velocity = Vector2.left;
-
-
             GetComponent<Animator>().SetBool("isWalking", true);
-            transform.rotation = Quaternion.Euler(0, 0f, 0);
 
+            transform.Translate(moveDirection * movementSpeed * Time.deltaTime);
+            spriteRenderer.flipX = false;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
 
         }
 
-        if (Input.GetKey(KeyCode.W) || (Input.GetKey(KeyCode.S)))
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            GetComponent<Animator>().SetBool("isWalking", true);
+            movementSpeed = movementSpeed * (int)movementAdjustment;
         }
-
-
-
 
     }
 
@@ -188,8 +197,23 @@ public class PlayerFunction : MonoBehaviour
            
         }
 
-  
+        if (collision.tag == "floor")
+        {
+            isGrounded = true;
+            Debug.Log("collision floor");
+            jumpValue = 0;
 
+        }
+        else if(collision.tag != "floor")
+        {
+            isGrounded = false;
+        }
+
+
+        if (collision.name == "Enemy")
+        {
+            Debug.Log("Enemy Detected");
+        }
     }
 
 
@@ -197,6 +221,12 @@ public class PlayerFunction : MonoBehaviour
     {
 
         vendingMachineFound = false;
+
+        if (collision.tag == "floor")
+        {
+            jumpEnabled = false;
+        }
+
 
     }
 
@@ -206,10 +236,16 @@ public class PlayerFunction : MonoBehaviour
         //if (!onGround)
         //    doubleJumpValue--;
 
+        if (jumpEnabled == true)
+        {
+            rb2D.AddForce((Vector2.up * jumpPower) * 5);
+
+            jumpValue += 1;
+
+        }
 
 
-        rb2D.velocity = new Vector2(rb2D.velocity.x, 0f);
-        rb2D.AddForce(Vector2.up * jumpPower);
+
         //   _hangTimeCounter = 0f;
         //   _jumpBufferCounter = 0f;
 
@@ -224,6 +260,11 @@ public class PlayerFunction : MonoBehaviour
 
 
         }
+
+    void groundCollisionCheck()
+    {
+
+    }
 
 
 }
